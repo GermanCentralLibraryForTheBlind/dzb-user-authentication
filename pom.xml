@@ -48,8 +48,6 @@
         <selenium-bom.version>3.11.0</selenium-bom.version>
         <arquillian-bom.version>1.4.0.Final</arquillian-bom.version>
         <arquillian-drone-bom.version>2.5.1</arquillian-drone-bom.version>
-        <version.hibernate.javax.persistence>1.0.0.Final</version.hibernate.javax.persistence>
-        <version.jboss-ejb-api>1.0.0.Final</version.jboss-ejb-api>
     </properties>
 
     <dependencyManagement>
@@ -81,6 +79,12 @@
                 <version>${version.wildfly}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-all</artifactId>
+                <version>${version.hamcrest}</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
@@ -141,27 +145,9 @@
             <version>${version.jackson}</version>
         </dependency>
         <dependency>
-            <groupId>org.hibernate.javax.persistence</groupId>
-            <artifactId>hibernate-jpa-2.1-api</artifactId>
-            <version>${version.hibernate.javax.persistence}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.spec.javax.ejb</groupId>
-            <artifactId>jboss-ejb-api_3.2_spec</artifactId>
-            <version>${version.jboss-ejb-api}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>net.sourceforge.jtds</groupId>
             <artifactId>jtds</artifactId>
             <version>1.3.1</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.10</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
     <repositories>
@@ -175,7 +161,7 @@
     </repositories>
 
     <build>
-        <finalName>dzb-userstore-keycloak-spi-adapter</finalName>
+        <finalName>keycloak-dzb-userstore-adapter</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -235,58 +221,6 @@
                             <redirectTestOutputToFile>false</redirectTestOutputToFile>
                             <skipTests>false</skipTests>
                         </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <!-- this profile deploys an mssql datasource connection.
-        Run type: mvn -Padd-datasource install.  This can only be run once.  If you run it again
-           you'll get an error that the datasource already exists -->
-        <profile>
-            <id>add-datasource</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.wildfly.plugins</groupId>
-                        <artifactId>wildfly-maven-plugin</artifactId>
-                        <configuration>
-                            <skip>false</skip>
-                            <force>true</force>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>add-datasource</id>
-                                <phase>install</phase>
-                                <goals>
-                                    <goal>add-resource</goal>
-                                </goals>
-                                <configuration>
-                                    <port>9990</port>
-                                    <force/>
-                                    <address>subsystem=datasources</address>
-                                    <resources>
-                                        <resource>
-                                            <address>xa-data-source=java:jboss/datasources/DZB</address>
-                                            <properties>
-                                                <jndi-name>java:jboss/datasources/DZB</jndi-name>
-                                                <enabled>true</enabled>
-                                                <driver-name>jtds-1.3.1.jar</driver-name>
-                                            </properties>
-                                            <resources>
-                                                <resource>
-                                                    <address>
-                                                        xa-datasource-properties=URL
-                                                    </address>
-                                                    <properties>
-                                                        <value>jdbc:h2:mem:test</value>
-                                                    </properties>
-                                                </resource>
-                                            </resources>
-                                        </resource>
-                                    </resources>
-                                </configuration>
-                            </execution>
-                        </executions>
                     </plugin>
                 </plugins>
             </build>

@@ -30,6 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.dzb.page.ConsolePage;
+import org.dzb.util.StorageManager;
 import org.keycloak.test.page.LoginPage;
 import org.openqa.selenium.WebDriver;
 
@@ -42,6 +43,10 @@ import java.util.concurrent.TimeUnit;
 import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.dzb.util.StorageManager.addUser;
+import static org.dzb.util.StorageManager.createStorage;
+import static org.dzb.util.StorageManager.deleteStorage;
+import static org.dzb.util.StorageManager.getPropertyFile;
 
 
 @RunWith(Arquillian.class)
@@ -65,11 +70,11 @@ public class ArquillianSimpleStorageTest {
     public static Archive<?> createTestArchive() throws IOException {
         return ShrinkWrap.create(JavaArchive.class, "user-storage-simple-example.jar")
                 .addClasses(
-                        /*StorageManager.class,*/
-                        DzbUserStorageProvider.class,
-                        DzbUserStorageProviderFactory.class)
+                        StorageManager.class,
+                        DZBUserStorageProvider.class,
+                        org.dzb.DZBUserStorageProviderFactory.class)
                 .addAsResource(EmptyAsset.INSTANCE, "beans.xml")
-                .addAsResource("META-INF/services/services/org.keycloak.storage.UserStorageProviderFactory")
+                .addAsResource("META-INF/services/org.keycloak.storage.UserStorageProviderFactory")
                 .addAsResource("users.properties");
 
     }
@@ -113,7 +118,7 @@ public class ArquillianSimpleStorageTest {
 //    public void testUserWritableFederationStorage() throws MalformedURLException, InterruptedException {
 //        try {
 //            createStorage();
-//            TestSetup("malcom", "butler");
+//            addUser("malcom", "butler");
 //
 //            loginPage.login("admin", "admin");
 //            consolePage.selectWritableStorage();
@@ -129,7 +134,7 @@ public class ArquillianSimpleStorageTest {
 //            assertEquals("Should display the user from storage provider", "malcom", consolePage.getUser());
 //            consolePage.logout();
 //
-//            TestSetup("rob", "gronkowski");
+//            addUser("rob", "gronkowski");
 //            navigateToAccount("rob", "gronkowski");
 //            assertEquals("Should display the user from storage provider", "rob", consolePage.getUser());
 //            consolePage.logout();
