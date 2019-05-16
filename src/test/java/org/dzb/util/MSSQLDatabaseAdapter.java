@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.dzb;
+package org.dzb.util;
 
 import java.sql.*;
 
 import org.jboss.logging.Logger;
 
-import java.util.Properties;
+import java.util.*;
 
 public class MSSQLDatabaseAdapter {
 
@@ -64,7 +64,7 @@ public class MSSQLDatabaseAdapter {
 
         logger.info("Connecting to database...");
         connection = DriverManager.getConnection(connectionUrl);
-        logger.info("Connection success");
+        logger.info("Successful connected");
 
         return this;
     }
@@ -77,6 +77,41 @@ public class MSSQLDatabaseAdapter {
 
     public ResultSet getUserByUsername(String username) throws Exception {
         return execQuery("SELECT Pers_Nachname From tblPerson WHERE Pers_Nachname =' + username + '");
+    }
+
+
+    public void addUsers(Properties p) throws Exception {
+
+//        String query = "IF EXISTS ( SELECT * FROM " + p.getProperty("table") + " WITH (UPDLOCK) WHERE Pers_Ident_EMail='"
+//                + p.getProperty("username") + "') UPDATE " + p.getProperty("table") + "  " +
+//                "SET Pers_Nachname = '" + p.getProperty("lastname") + "', Pers_Vorname ='" +
+//                "" + p.getProperty("firstname") + "', Pers_Ident_PW= '" + p.getProperty("password") + "' WHERE Pers_Ident_EMail='"
+//                + p.getProperty("username") + "'; " +
+//                "ELSE INSERT " + p.getProperty("table") + " ( Pers_Ident_EMail, Pers_Nachname, Pers_Vorname, Pers_Ident_PW ) " +
+//                "VALUES ( " + p.getProperty("username") + ", " + p.getProperty("lastname") + " , " +
+//                "" + p.getProperty("firstname") + ", " + p.getProperty("password") + "); ";
+
+        String query = "IF NOT EXISTS ( SELECT * FROM " + p.getProperty("table") + " WITH (UPDLOCK) WHERE Pers_Ident_EMail='"
+                + p.getProperty("Pers_Ident_EMail") + "')" +
+                "BEGIN INSERT " + p.getProperty("table") + " (";
+
+        Set<String> keys = p.stringPropertyNames();
+        keys.remove("table");
+
+        query +=  String.join(",", keys);
+        query += ") VALUES ( ";
+
+        List<String> values = new ArrayList<>();
+        for (String key : keys)
+            values.add("'"+ p.getProperty(key) + "'");
+
+        query +=  String.join(",", values);
+        query += "); END";
+
+        System.out.println(query);
+        statement = connection.createStatement();
+        statement.executeUpdate(query);
+        statement.close();
     }
 
     private ResultSet execQuery(String query) throws Exception {
