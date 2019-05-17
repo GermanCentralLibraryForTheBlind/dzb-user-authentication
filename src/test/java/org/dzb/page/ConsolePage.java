@@ -20,14 +20,14 @@ public class ConsolePage {
     @FindBy(partialLinkText = "readonly-property-file")
     private WebElement readOnlyStorageLink;
 
-    @FindBy(partialLinkText = "writeable-property-file")
-    private WebElement writableStorageLink;
+//    @FindBy(partialLinkText = "writeable-property-file")
+//    private WebElement writableStorageLink;
 
     @FindBy(xpath = "//select/option[normalize-space(text())='readonly-property-file']")
     private WebElement readOnlyStorageOption;
 
-    @FindBy(xpath = "//select/option[normalize-space(text())='writeable-property-file']")
-    private WebElement writableStorageOption;
+//    @FindBy(xpath = "//select/option[normalize-space(text())='writeable-property-file']")
+//    private WebElement writableStorageOption;
 
     @FindBy(xpath = "//button[text()[contains(.,'Save')]]")
     private WebElement save;
@@ -57,9 +57,9 @@ public class ConsolePage {
         readOnlyStorageOption.click();
     }
 
-    public void selectWritableUserStorage() {
-        writableStorageOption.click();
-    }
+//    public void selectWritableUserStorage() {
+//        writableStorageOption.click();
+//    }
 
     public void logout() {
         logoutLink.click();
@@ -74,29 +74,15 @@ public class ConsolePage {
     public WebElement readOnlyStorageLink() {
         return readOnlyStorageLink;
     }
-
-    public WebElement writableStorageLink() {
-        return writableStorageLink;
-    }
+//
+//    public WebElement writableStorageLink() {
+//        return writableStorageLink;
+//    }
 
     public void createReadOnlyStorage() {
         navigateToUserFederationMenu();
         selectReadOnlyUserStorage();
         save.click();
-    }
-
-    public void selectWritableStorage() {
-        navigateToUserFederationMenu();
-        selectWritableUserStorage();
-    }
-
-    public void save() {
-        save.click();
-    }
-
-    public void setFileStoragePath(String path) {
-        propertyPath.clear();
-        propertyPath.sendKeys(path);
     }
 
     public void delete() {
