@@ -80,7 +80,7 @@ public class MSSQLDatabaseAdapter {
     }
 
 
-    public void addUsers(Properties p) throws Exception {
+    public void addUsers(List<Properties> ps) throws Exception {
 
 //        String query = "IF EXISTS ( SELECT * FROM " + p.getProperty("table") + " WITH (UPDLOCK) WHERE Pers_Ident_EMail='"
 //                + p.getProperty("username") + "') UPDATE " + p.getProperty("table") + "  " +
@@ -91,27 +91,30 @@ public class MSSQLDatabaseAdapter {
 //                "VALUES ( " + p.getProperty("username") + ", " + p.getProperty("lastname") + " , " +
 //                "" + p.getProperty("firstname") + ", " + p.getProperty("password") + "); ";
 
-        String query = "IF NOT EXISTS ( SELECT * FROM " + p.getProperty("table") + " WITH (UPDLOCK) WHERE Pers_Ident_EMail='"
-                + p.getProperty("Pers_Ident_EMail") + "')" +
-                "BEGIN INSERT " + p.getProperty("table") + " (";
+        for (Properties p : ps) {
 
-        Set<String> keys = p.stringPropertyNames();
-        keys.remove("table");
+            String query = "IF NOT EXISTS ( SELECT * FROM " + p.getProperty("table") + " WITH (UPDLOCK) WHERE Pers_Ident_EMail='"
+                    + p.getProperty("Pers_Ident_EMail") + "')" +
+                    "BEGIN INSERT " + p.getProperty("table") + " (";
 
-        query +=  String.join(",", keys);
-        query += ") VALUES ( ";
+            Set<String> keys = p.stringPropertyNames();
+            keys.remove("table");
 
-        List<String> values = new ArrayList<>();
-        for (String key : keys)
-            values.add("'"+ p.getProperty(key) + "'");
+            query += String.join(",", keys);
+            query += ") VALUES ( ";
 
-        query +=  String.join(",", values);
-        query += "); END";
+            List<String> values = new ArrayList<>();
+            for (String key : keys)
+                values.add("'" + p.getProperty(key) + "'");
 
-        System.out.println(query);
-        statement = connection.createStatement();
-        statement.executeUpdate(query);
-        statement.close();
+            query += String.join(",", values);
+            query += "); END";
+
+            System.out.println(query);
+            statement = connection.createStatement();
+            statement.executeUpdate(query);
+            statement.close();
+        }
     }
 
     private ResultSet execQuery(String query) throws Exception {

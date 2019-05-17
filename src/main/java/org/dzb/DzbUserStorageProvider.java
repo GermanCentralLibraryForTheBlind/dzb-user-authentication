@@ -91,8 +91,9 @@ public class DzbUserStorageProvider implements
 
     @Override
     public UserModel getUserByEmail(String email, RealmModel realm) {
+        logger.info("getUserByEmail: " + email);
         TypedQuery<DzbUserEntity> query = em.createNamedQuery("getUserByEmail", DzbUserEntity.class);
-        query.setParameter("email", email);
+        query.setParameter("username", email);
         List<DzbUserEntity> result = query.getResultList();
         if (result.isEmpty()) return null;
         return new UserAdapter(session, realm, model, result.get(0));
