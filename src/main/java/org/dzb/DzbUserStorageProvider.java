@@ -26,6 +26,7 @@ import org.keycloak.credential.CredentialModel;
 import org.keycloak.models.*;
 import org.keycloak.models.cache.CachedUserModel;
 
+import org.keycloak.storage.StorageId;
 import org.keycloak.storage.user.UserLookupProvider;
 import org.keycloak.storage.user.UserQueryProvider;
 import org.keycloak.storage.UserStorageProvider;
@@ -72,7 +73,28 @@ public class DzbUserStorageProvider implements
     // UserLookupProvider methods
     @Override
     public UserModel getUserById(String id, RealmModel realm) {
-        return null;
+
+        logger.info("getUserById: " + id);
+        StorageId storageId = new StorageId(id);
+        int persistenceId = Integer.valueOf(storageId.getExternalId());
+        DzbUserEntity entity = em.find(DzbUserEntity.class, persistenceId);
+
+        logger.info("entity: " + entity.getUsername());
+        if (entity == null) {
+            logger.info("could not find user by id: " + id);
+            return null;
+        }
+
+//        return new UserAdapter(this.session, realm, this.model, entity);
+        return getUserByUsername( entity.getUsername(), realm);
+
+//        String persistenceId = StorageId.externalId(id);
+//        DzbUserEntity entity = em.find(DzbUserEntity.class, persistenceId);
+//        if (entity == null) {
+//            logger.info("could not find user by id: " + id);
+//            return null;
+//        }
+//        return null;
     }
 
     @Override
@@ -95,10 +117,14 @@ public class DzbUserStorageProvider implements
         TypedQuery<DzbUserEntity> query = em.createNamedQuery("getUserByEmail", DzbUserEntity.class);
         query.setParameter("username", email);
         List<DzbUserEntity> result = query.getResultList();
-        if (result.isEmpty()) return null;
+
+        logger.info("result: " + result);
+        if (result.isEmpty()) {
+            logger.info("could not find username: " + email);
+            return null;
+        }
         return new UserAdapter(session, realm, model, result.get(0));
     }
-
 
 //    @Override
 //    public void onCache(RealmModel realm, CachedUserModel user, UserModel delegate) {

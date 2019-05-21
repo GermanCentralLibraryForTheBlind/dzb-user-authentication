@@ -24,7 +24,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +37,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import static java.lang.String.format;
+
 import java.util.concurrent.TimeUnit;
+
 import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -63,15 +64,15 @@ public class ArquillianSimpleStorageTest {
 
     @Deployment(testable = false)
     public static Archive<?> createTestArchive() throws IOException {
-        return ShrinkWrap.create(JavaArchive.class, "user-storage-simple-example.jar")
+        return ShrinkWrap.create(JavaArchive.class, "keycloak-dzb-userstore.jar")
                 .addClasses(
-                        /*StorageManager.class,*/
                         DzbUserStorageProvider.class,
-                        DzbUserStorageProviderFactory.class)
-                .addAsResource(EmptyAsset.INSTANCE, "beans.xml")
-                .addAsResource("META-INF/services/services/org.keycloak.storage.UserStorageProviderFactory")
-                .addAsResource("users.properties");
-
+                        DzbUserStorageProviderFactory.class,
+                        UserAdapter.class,
+                        DzbUserEntity.class
+                )
+                .addAsResource("META-INF/services/org.keycloak.storage.UserStorageProviderFactory")
+                .addAsResource("META-INF/persistence.xml");
     }
 
 
@@ -90,16 +91,16 @@ public class ArquillianSimpleStorageTest {
     public void testUserReadOnlyFederationStorage() throws MalformedURLException, InterruptedException {
         try {
             loginPage.login("admin", "admin");
-            consolePage.createReadOnlyStorage();
+            consolePage.createDzbUserStorage();
             consolePage.navigateToUserFederationMenu();
-            assertNotNull("Storage provider should be created", consolePage.readOnlyStorageLink());
+            assertNotNull("Storage provider should be created", consolePage.dzbUserStorageLink());
 
             navigateTo("/realms/master/account");
             assertEquals("Should display admin", "admin", consolePage.getUser());
             consolePage.logout();
 
-            navigateToAccount("tbrady", "superbowl");
-            assertEquals("Should display the user from storage provider", "tbrady", consolePage.getUser());
+            navigateToAccount("blind@dzb.de", "blind");
+            assertEquals("Should display the user from storage provider", "blind@dzb.de", consolePage.getUser());
             consolePage.logout();
 
             removeProvider();
@@ -154,7 +155,7 @@ public class ArquillianSimpleStorageTest {
         loginPage.login(user, password);
         navigateTo("/realms/master/account");
     }
-    
+
     private void debugTest(Exception e) {
         System.out.println(webDriver.getPageSource());
         e.printStackTrace();
