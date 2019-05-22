@@ -26,30 +26,30 @@ import javax.persistence.*;
 @NamedQueries({
         @NamedQuery(
                 name="getUserByUsername",
-                query="select u from DzbUserEntity u where u.username = :username"
+                query="select u from DzbUser u where u.username = :username"
         ),
         @NamedQuery(
                 name="getUserByEmail",
-                query="select u from DzbUserEntity u where u.username = :username"
+                query="select u from DzbUser u where u.username = :username"
         ),
         @NamedQuery(
                 name="getUserCount",
-                query="select count(u) from DzbUserEntity u"
+                query="select count(u) from DzbUser u"
         ),
         @NamedQuery(
                 name="getAllUsers",
-                query="select u from DzbUserEntity u"
+                query="select u from DzbUser u"
         ),
         @NamedQuery(
                 name="searchForUser",
-                query="select u from DzbUserEntity u where " +
+                query="select u from DzbUser u where " +
                         "( lower(u.username) like :search or u.lastName like :search )" +
                         " order by u.username"
         ),
 })
 @Entity
 @Table(name="tblPerson")
-public class DzbUserEntity {
+public class DzbUser {
 
     @Id
     @Column(name="Pers_Nr")
@@ -79,9 +79,7 @@ public class DzbUserEntity {
         return username;
     }
 
-    public String getEmail() {
-        return username;
-    }
+    public String getEmail() { return username; }
 
     public String getPassword() {
         return password;

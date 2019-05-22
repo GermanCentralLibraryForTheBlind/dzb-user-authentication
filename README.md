@@ -42,3 +42,17 @@ TODO
 More Information
 ----------------
 https://www.keycloak.org/docs/2.5/server_development/topics/user-storage.html
+
+
+Troubleshooting
+---------------
+
+````
+ARJUNA012140: Adding multiple last resources is disallowed.
+````
+You need to modify standalone.xml and add:
+````
+<system-properties>
+        <property name="com.arjuna.ats.arjuna.allowMultipleLastResources" value="true"/>
+</system-properties>
+````

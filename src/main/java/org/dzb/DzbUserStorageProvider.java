@@ -24,7 +24,6 @@ import org.keycloak.credential.CredentialInputUpdater;
 import org.keycloak.credential.CredentialInputValidator;
 import org.keycloak.credential.CredentialModel;
 import org.keycloak.models.*;
-import org.keycloak.models.cache.CachedUserModel;
 
 import org.keycloak.storage.StorageId;
 import org.keycloak.storage.user.UserLookupProvider;
@@ -76,35 +75,28 @@ public class DzbUserStorageProvider implements
 
         logger.info("getUserById: " + id);
         StorageId storageId = new StorageId(id);
-        int persistenceId = Integer.valueOf(storageId.getExternalId());
-        DzbUserEntity entity = em.find(DzbUserEntity.class, persistenceId);
+        int externalId = Integer.valueOf(storageId.getExternalId());
 
-        logger.info("entity: " + entity.getUsername());
-        if (entity == null) {
+        logger.info("getUserById: " + id + ", External Id: " + externalId);
+
+        DzbUser user = em.find(DzbUser.class, externalId);
+
+        if (user == null) {
             logger.info("could not find user by id: " + id);
             return null;
         }
-
-//        return new UserAdapter(this.session, realm, this.model, entity);
-        return getUserByUsername( entity.getUsername(), realm);
-
-//        String persistenceId = StorageId.externalId(id);
-//        DzbUserEntity entity = em.find(DzbUserEntity.class, persistenceId);
-//        if (entity == null) {
-//            logger.info("could not find user by id: " + id);
-//            return null;
-//        }
-//        return null;
+        logger.info("User " + user.getUsername() +  " found by id " + externalId);
+        return new UserAdapter(this.session, realm, this.model, user);
     }
 
     @Override
     public UserModel getUserByUsername(String username, RealmModel realm) {
         logger.info("getUserByUsername: " + username);
-        TypedQuery<DzbUserEntity> query = em.createNamedQuery("getUserByUsername", DzbUserEntity.class);
+        TypedQuery<DzbUser> query = em.createNamedQuery("getUserByUsername", DzbUser.class);
         query.setParameter("username", username);
-        List<DzbUserEntity> result = query.getResultList();
+        List<DzbUser> result = query.getResultList();
         if (result.isEmpty()) {
-            logger.info("could not find username: " + username);
+            logger.info("could not find UserByUsername: " + username);
             return null;
         }
 
@@ -114,13 +106,13 @@ public class DzbUserStorageProvider implements
     @Override
     public UserModel getUserByEmail(String email, RealmModel realm) {
         logger.info("getUserByEmail: " + email);
-        TypedQuery<DzbUserEntity> query = em.createNamedQuery("getUserByEmail", DzbUserEntity.class);
+        TypedQuery<DzbUser> query = em.createNamedQuery("getUserByEmail", DzbUser.class);
         query.setParameter("username", email);
-        List<DzbUserEntity> result = query.getResultList();
+        List<DzbUser> result = query.getResultList();
 
         logger.info("result: " + result);
         if (result.isEmpty()) {
-            logger.info("could not find username: " + email);
+            logger.info("could not find UserByEmail: " + email);
             return null;
         }
         return new UserAdapter(session, realm, model, result.get(0));
@@ -183,7 +175,9 @@ public class DzbUserStorageProvider implements
             return false;
 
         String password = getCredentialHashedPassword(input);
-        return password != null && password.equals(getPassword(user));
+        final boolean valid = password != null && password.equals(getPassword(user));
+        logger.info("User " + user.getUsername() + " is " + ((valid) ? "valid" : "invalid"));
+        return valid;
     }
 
 
@@ -203,7 +197,10 @@ public class DzbUserStorageProvider implements
     public int getUsersCount(RealmModel realm) {
         Object count = em.createNamedQuery("getUserCount")
                 .getSingleResult();
-        return ((Number) count).intValue();
+
+        final int usersCount =  ((Number) count).intValue();
+        logger.info("Users Count: " + usersCount);
+        return usersCount;
     }
 
     @Override
@@ -214,16 +211,19 @@ public class DzbUserStorageProvider implements
     @Override
     public List<UserModel> getUsers(RealmModel realm, int firstResult, int maxResults) {
         logger.info("getUsers: " + firstResult + " " + maxResults);
-        TypedQuery<DzbUserEntity> query = em.createNamedQuery("getAllUsers", DzbUserEntity.class);
+        TypedQuery<DzbUser> query = em.createNamedQuery("getAllUsers", DzbUser.class);
         if (firstResult != -1) {
             query.setFirstResult(firstResult);
         }
         if (maxResults != -1) {
             query.setMaxResults(maxResults);
         }
-        List<DzbUserEntity> results = query.getResultList();
+        List<DzbUser> results = query.getResultList();
         List<UserModel> users = new LinkedList<>();
-        for (DzbUserEntity entity : results) users.add(new UserAdapter(session, realm, model, entity));
+        for (DzbUser entity : results) users.add(new UserAdapter(session, realm, model, entity));
+
+        logger.info("Returned " + users.size() + " users");
+
         return users;
     }
 
@@ -232,12 +232,13 @@ public class DzbUserStorageProvider implements
         return searchForUser(search, realm, -1, -1);
     }
 
+
     @Override
     public List<UserModel> searchForUser(String search, RealmModel realm, int firstResult, int maxResults) {
 
         logger.info("searchForUser: " + search);
 
-        TypedQuery<DzbUserEntity> query = em.createNamedQuery("searchForUser", DzbUserEntity.class);
+        TypedQuery<DzbUser> query = em.createNamedQuery("searchForUser", DzbUser.class);
 
 
         query.setParameter("search", "%" + search.toLowerCase() + "%");
@@ -247,10 +248,11 @@ public class DzbUserStorageProvider implements
         if (maxResults != -1) {
             query.setMaxResults(maxResults);
         }
-        List<DzbUserEntity> results = query.getResultList();
+        List<DzbUser> results = query.getResultList();
         List<UserModel> users = new LinkedList<>();
-        for (DzbUserEntity entity : results) users.add(new UserAdapter(session, realm, model, entity));
+        for (DzbUser entity : results) users.add(new UserAdapter(session, realm, model, entity));
 
+        logger.info("Returned " + users.size() + " users");
         return users;
     }
 

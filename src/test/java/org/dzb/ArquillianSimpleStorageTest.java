@@ -69,7 +69,7 @@ public class ArquillianSimpleStorageTest {
                         DzbUserStorageProvider.class,
                         DzbUserStorageProviderFactory.class,
                         UserAdapter.class,
-                        DzbUserEntity.class
+                        DzbUser.class
                 )
                 .addAsResource("META-INF/services/org.keycloak.storage.UserStorageProviderFactory")
                 .addAsResource("META-INF/persistence.xml");

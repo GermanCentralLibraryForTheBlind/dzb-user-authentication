@@ -7,7 +7,7 @@
         <persistence-unit name="dzb-userstore-keycloak-spi-adapter">
             <jta-data-source>java:jboss/datasources/DZB</jta-data-source>
 
-            <class>org.dzb.DzbUserEntity</class>
+            <class>org.dzb.DzbUser</class>
 
             <properties>
                 <property name="hibernate.hbm2ddl.auto" value="validate"/>

@@ -1,0 +1,27 @@
+Bind WildFly to a different IP address
+--------------------------------------
+WildFly “management” interface can be bound to a specific IP address as:
+
+./bin/standalone.sh -bmanagement=192.168.1.1
+Now Admin Console can be accessed at http://192.168.1.1:9990.
+
+Or, bind “management” interface to all available IP addresses as:
+
+./bin/standalone.sh -bmanagement=0.0.0.0
+You can also bind to two specific addresses as explained here.
+
+Of course, you can bind WildFly “public” and “management” interface together as:
+
+./bin/standalone.sh -b=0.0.0.0 -bmanagement=0.0.0.0
+
+
+jboss cli
+
+/interface=public/:write-attribute(name=inet-address,value=0.0.0.0)
+/interface=management/:write-attribute(name=inet-address,value=0.0.0.0)
+
+
+Reload configuration via CLI
+----------------------------------
+/:reload
+

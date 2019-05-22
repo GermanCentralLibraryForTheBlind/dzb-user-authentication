@@ -24,6 +24,7 @@ import org.keycloak.models.RealmModel;
 import org.keycloak.storage.StorageId;
 import org.keycloak.storage.adapter.AbstractUserAdapterFederatedStorage;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -34,10 +35,10 @@ import java.util.Map;
  */
 public class UserAdapter extends AbstractUserAdapterFederatedStorage {
     private static final Logger logger = Logger.getLogger(UserAdapter.class);
-    protected DzbUserEntity entity;
+    protected DzbUser entity;
     protected String keycloakId;
 
-    public UserAdapter(KeycloakSession session, RealmModel realm, ComponentModel model, DzbUserEntity entity) {
+    public UserAdapter(KeycloakSession session, RealmModel realm, ComponentModel model, DzbUser entity) {
         super(session, realm, model);
 
         this.entity = entity;
@@ -81,26 +82,31 @@ public class UserAdapter extends AbstractUserAdapterFederatedStorage {
 
     @Override
     public Map<String, List<String>> getAttributes() {
+        logger.info("getAttributes");
         Map<String, List<String>> attrs = super.getAttributes();
         MultivaluedHashMap<String, String> all = new MultivaluedHashMap<>();
         all.putAll(attrs);
         all.add(AbstractUserAdapterFederatedStorage.LAST_NAME_ATTRIBUTE, entity.getLastName());
         all.add(AbstractUserAdapterFederatedStorage.FIRST_NAME_ATTRIBUTE, entity.getFirstName());
+        logger.info("Returned " + all.size() + " attributes");
         return all;
     }
 
     @Override
     public List<String> getAttribute(String name) {
+
+        logger.info("getAttribute: " + name);
         List<String> attr = new LinkedList<>();
 
         if (name.equals(AbstractUserAdapterFederatedStorage.LAST_NAME_ATTRIBUTE)) {
             attr.add(entity.getLastName());
-            return attr;
         } else if (name.equals(AbstractUserAdapterFederatedStorage.FIRST_NAME_ATTRIBUTE)) {
             attr.add(entity.getFirstName());
-            return attr;
         } else {
-            return super.getAttribute(name);
+
+            List<String> superAttr = super.getAttribute(name);
+            attr.addAll((superAttr == null) ? new ArrayList<>() : superAttr);
         }
+        return attr;
     }
 }

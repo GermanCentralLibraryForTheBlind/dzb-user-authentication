@@ -48,8 +48,8 @@ public class TestSetup {
         p1.setProperty("table", "tblPerson");
         p1.setProperty("Pers_Ident_EMail", "blind@dzb.de"); // username
         p1.setProperty("Pers_Ident_PW", hashPassword("blind")); // password
-        p1.setProperty("Pers_Nachname", "Ray"); // last name
-        p1.setProperty("Pers_Vorname", "Charles"); // firstname
+        p1.setProperty("Pers_Nachname", "Charles"); // last name
+        p1.setProperty("Pers_Vorname", "Ray"); // firstname
         p1.setProperty("Pers_Blind", "true"); // handicap blind
 
 
@@ -57,16 +57,16 @@ public class TestSetup {
         p2.setProperty("table", "tblPerson");
         p2.setProperty("Pers_Ident_EMail", "partially-sighted@dzb.de"); // username
         p2.setProperty("Pers_Ident_PW", hashPassword("partially-sighted")); // password
-        p2.setProperty("Pers_Nachname", "Julian"); // last name
-        p2.setProperty("Pers_Vorname", "Mueller"); // firstname
+        p2.setProperty("Pers_Nachname", "Mueller"); // last name
+        p2.setProperty("Pers_Vorname", "Julian"); // firstname
         p2.setProperty("Pers_Sehbehindert", "true"); // handicap partially-sighted
 
         Properties p3 = new Properties();
         p3.setProperty("table", "tblPerson");
         p3.setProperty("Pers_Ident_EMail", "dyslexia@dzb.de"); // username
         p3.setProperty("Pers_Ident_PW", hashPassword("dyslexia")); // password
-        p3.setProperty("Pers_Nachname", "Kurt"); // last name
-        p3.setProperty("Pers_Vorname", "Schulze"); // firstname
+        p3.setProperty("Pers_Nachname", "Schulze"); // last name
+        p3.setProperty("Pers_Vorname", "Kurt"); // firstname
         p3.setProperty("Pers_Legastheniker", "true"); // handicap dyslexia
 
         ps.add(p1);
