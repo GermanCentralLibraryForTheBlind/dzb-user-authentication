@@ -47,7 +47,7 @@ public class TestSetup {
         Properties p1 = new Properties();
         p1.setProperty("table", "tblPerson");
         p1.setProperty("Pers_Ident_EMail", "blind@dzb.de"); // username
-        p1.setProperty("Pers_Ident_PW", hashPassword("blind")); // password
+        p1.setProperty("Pers_Ident_PW", encrypt("blind")); // password
         p1.setProperty("Pers_Nachname", "Charles"); // last name
         p1.setProperty("Pers_Vorname", "Ray"); // firstname
         p1.setProperty("Pers_Blind", "true"); // handicap blind
@@ -56,7 +56,7 @@ public class TestSetup {
         Properties p2 = new Properties();
         p2.setProperty("table", "tblPerson");
         p2.setProperty("Pers_Ident_EMail", "partially-sighted@dzb.de"); // username
-        p2.setProperty("Pers_Ident_PW", hashPassword("partially-sighted")); // password
+        p2.setProperty("Pers_Ident_PW", encrypt("partially-sighted")); // password
         p2.setProperty("Pers_Nachname", "Mueller"); // last name
         p2.setProperty("Pers_Vorname", "Julian"); // firstname
         p2.setProperty("Pers_Sehbehindert", "true"); // handicap partially-sighted
@@ -64,7 +64,7 @@ public class TestSetup {
         Properties p3 = new Properties();
         p3.setProperty("table", "tblPerson");
         p3.setProperty("Pers_Ident_EMail", "dyslexia@dzb.de"); // username
-        p3.setProperty("Pers_Ident_PW", hashPassword("dyslexia")); // password
+        p3.setProperty("Pers_Ident_PW", encrypt("dyslexia")); // password
         p3.setProperty("Pers_Nachname", "Schulze"); // last name
         p3.setProperty("Pers_Vorname", "Kurt"); // firstname
         p3.setProperty("Pers_Legastheniker", "true"); // handicap dyslexia
@@ -80,9 +80,8 @@ public class TestSetup {
         }
     }
 
-
     // refactoring same function in DzbUserStorageProvider
-    private static String hashPassword(String password) {
+    private static String encrypt(String password) {
         return DigestUtils.sha256Hex(password);
     }
 }

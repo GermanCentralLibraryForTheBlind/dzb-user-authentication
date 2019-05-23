@@ -15,3 +15,5 @@
             </properties>
         </persistence-unit>
 </persistence>
+
+<!--        jdbc:jtds:sqlserver://dzbvm-sql2005:1433;database=DZB;-->

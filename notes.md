@@ -15,13 +15,33 @@ Of course, you can bind WildFly “public” and “management” interface toge
 ./bin/standalone.sh -b=0.0.0.0 -bmanagement=0.0.0.0
 
 
-jboss cli
+##### via jboss cli
 
 /interface=public/:write-attribute(name=inet-address,value=0.0.0.0)
 /interface=management/:write-attribute(name=inet-address,value=0.0.0.0)
 
 
-Reload configuration via CLI
+JBoss:reload configuration via CLI
 ----------------------------------
 /:reload
 
+
+ARJUNA012140: Adding multiple last resources is disallowed.
+-----------------------------------------------------------------
+
+/system-property=com.arjuna.ats.arjuna.allowMultipleLastResources:add(value="true")
+
+Prevent printing warnings within logs:
+
+/subsystem=logging/console-handler=CONSOLE:write-attribute(name=filter-spec, value="not(match(\"ARJUNA012141\"))"
+
+
+JBoss Server Remote
+-------------------
+$ EAP_HOME/bin/jboss-cli.sh
+
+connect http-remoting://192.168.0.1:9999
+
+Adding system property using CLI
+-------------------------------------------------------
+/system-property=foo:add(value=bar)

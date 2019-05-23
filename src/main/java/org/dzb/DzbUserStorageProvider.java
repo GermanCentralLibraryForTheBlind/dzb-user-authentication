@@ -174,7 +174,7 @@ public class DzbUserStorageProvider implements
         if (!supportsCredentialType(input.getType()) || !(input instanceof UserCredentialModel))
             return false;
 
-        String password = getCredentialHashedPassword(input);
+        String password = encryptUserCredential(input);
         final boolean valid = password != null && password.equals(getPassword(user));
         logger.info("User " + user.getUsername() + " is " + ((valid) ? "valid" : "invalid"));
         return valid;
@@ -188,7 +188,7 @@ public class DzbUserStorageProvider implements
 
 
     /* user input credentails */
-    public String getCredentialHashedPassword(CredentialInput cred) {
+    public String encryptUserCredential(CredentialInput cred) {
 
         return DigestUtils.sha256Hex(((UserCredentialModel) cred).getValue());
     }
