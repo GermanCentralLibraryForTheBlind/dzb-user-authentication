@@ -31,7 +31,7 @@ import javax.naming.InitialContext;
 public class DzbUserStorageProviderFactory implements UserStorageProviderFactory<DzbUserStorageProvider> {
 
     private static final Logger logger = Logger.getLogger(DzbUserStorageProviderFactory.class);
-    public static final String PROVIDER_NAME = "dzb-userstore";
+    public static final String PROVIDER_NAME = "dzb-user-authentication";
 
 
     @Override
@@ -52,7 +52,7 @@ public class DzbUserStorageProviderFactory implements UserStorageProviderFactory
         try {
             InitialContext ctx = new InitialContext();
 
-            String lookupId = "java:global/dzb-userstore-keycloak-spi-adapter/" + DzbUserStorageProvider.class.getSimpleName();
+            String lookupId = "java:global/dzb-user-authentication/" + DzbUserStorageProvider.class.getSimpleName();
             DzbUserStorageProvider provider = (DzbUserStorageProvider) ctx.lookup(lookupId);
             provider.setModel(model);
             provider.setSession(session);

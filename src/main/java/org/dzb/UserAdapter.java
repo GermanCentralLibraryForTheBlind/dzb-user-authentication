@@ -35,23 +35,23 @@ import java.util.Map;
  */
 public class UserAdapter extends AbstractUserAdapterFederatedStorage {
     private static final Logger logger = Logger.getLogger(UserAdapter.class);
-    protected DzbUser entity;
+    protected DzbUser user;
     protected String keycloakId;
 
-    public UserAdapter(KeycloakSession session, RealmModel realm, ComponentModel model, DzbUser entity) {
+    public UserAdapter(KeycloakSession session, RealmModel realm, ComponentModel model, DzbUser user) {
         super(session, realm, model);
 
-        this.entity = entity;
-        keycloakId = StorageId.keycloakId(model, String.valueOf(entity.getId()));
+        this.user = user;
+        keycloakId = StorageId.keycloakId(model, String.valueOf(user.getId()));
     }
 
     public String getPassword() {
-        return entity.getPassword();
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return entity.getUsername();
+        return user.getUsername();
     }
 
     @Override
@@ -60,7 +60,7 @@ public class UserAdapter extends AbstractUserAdapterFederatedStorage {
 
     @Override
     public String getEmail() {
-        return entity.getEmail();
+        return user.getEmail();
     }
 
     @Override
@@ -72,9 +72,9 @@ public class UserAdapter extends AbstractUserAdapterFederatedStorage {
     @Override
     public String getFirstAttribute(String name) {
         if (name.equals(AbstractUserAdapterFederatedStorage.LAST_NAME_ATTRIBUTE)) {
-            return entity.getLastName();
+            return user.getLastName();
         } else if (name.equals(AbstractUserAdapterFederatedStorage.FIRST_NAME_ATTRIBUTE)) {
-            return entity.getFirstName();
+            return user.getFirstName();
         } else {
             return super.getFirstAttribute(name);
         }
@@ -86,8 +86,8 @@ public class UserAdapter extends AbstractUserAdapterFederatedStorage {
         Map<String, List<String>> attrs = super.getAttributes();
         MultivaluedHashMap<String, String> all = new MultivaluedHashMap<>();
         all.putAll(attrs);
-        all.add(AbstractUserAdapterFederatedStorage.LAST_NAME_ATTRIBUTE, entity.getLastName());
-        all.add(AbstractUserAdapterFederatedStorage.FIRST_NAME_ATTRIBUTE, entity.getFirstName());
+        all.add(AbstractUserAdapterFederatedStorage.LAST_NAME_ATTRIBUTE, user.getLastName());
+        all.add(AbstractUserAdapterFederatedStorage.FIRST_NAME_ATTRIBUTE, user.getFirstName());
         logger.info("Returned " + all.size() + " attributes");
         return all;
     }
@@ -99,9 +99,9 @@ public class UserAdapter extends AbstractUserAdapterFederatedStorage {
         List<String> attr = new LinkedList<>();
 
         if (name.equals(AbstractUserAdapterFederatedStorage.LAST_NAME_ATTRIBUTE)) {
-            attr.add(entity.getLastName());
+            attr.add(user.getLastName());
         } else if (name.equals(AbstractUserAdapterFederatedStorage.FIRST_NAME_ATTRIBUTE)) {
-            attr.add(entity.getFirstName());
+            attr.add(user.getFirstName());
         } else {
 
             List<String> superAttr = super.getAttribute(name);

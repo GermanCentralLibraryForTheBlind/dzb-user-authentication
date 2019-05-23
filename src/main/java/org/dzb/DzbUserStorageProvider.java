@@ -54,7 +54,7 @@ public class DzbUserStorageProvider implements
     protected KeycloakSession session;
     protected ComponentModel model;
 
-    @PersistenceContext(unitName = "dzb-userstore-keycloak-spi-adapter")
+    @PersistenceContext(unitName = "dzb-user-authentication")
     protected EntityManager em;
 
     private static final Logger logger = Logger.getLogger(UserStorageProvider.class);

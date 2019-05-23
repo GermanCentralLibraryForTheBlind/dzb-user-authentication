@@ -6,10 +6,10 @@
     <groupId>org.keycloak.dzb</groupId>
     <version>0.0.1</version>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>keycloak-dzb-userstore</artifactId>
+    <artifactId>dzb-user-authentication</artifactId>
     <packaging>jar</packaging>
-    <name>adapter for DZB user database</name>
-    <description>User Storage SPI for DZB users</description>
+    <name>Adapter for DZB user authentication</name>
+    <description>User Storage SPI to authenticate DZB users</description>
 
     <licenses>
         <license>
@@ -174,7 +174,7 @@
     </repositories>
 
     <build>
-        <finalName>dzb-userstore-keycloak-spi-adapter</finalName>
+        <finalName>dzb-user-authentication</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -208,19 +208,6 @@
 <!--                    <password></password>-->
                                         <skip>false</skip>
                 </configuration>
-                <!--                <executions>-->
-                <!--                    <execution>-->
-                <!--                        <phase>install</phase>-->
-                <!--                        <goals>-->
-                <!--                            <goal>deploy-artifact</goal>-->
-                <!--                        </goals>-->
-                <!--                        <configuration>-->
-                <!--                            <groupId>commons-codec</groupId>-->
-                <!--                            <artifactId>commons-codec</artifactId>-->
-                <!--                            <name>commons-codec-1.9.jar</name>-->
-                <!--                        </configuration>-->
-                <!--                    </execution>-->
-                <!--                </executions>-->
             </plugin>
             <plugin>
                 <artifactId>maven-enforcer-plugin</artifactId>
