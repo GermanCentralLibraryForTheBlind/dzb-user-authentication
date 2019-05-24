@@ -5,7 +5,7 @@ DZB User Authentication
 
  What is it?
 -------------------
-This is an implementing of an Keycloak User Storage SPI. It shows how to integrate our existing external DZB user database to Keycloak. The primary aim is to map our user data to the Keycloak user metamodel so that it can be consumed by the Keycloak runtime.   
+This is an implementing of an Keycloak User Storage SPI. It shows how to integrate existing external microsoft database to Keycloak. The primary aim is to map user data to the Keycloak user metamodel so that it can be consumed by the Keycloak runtime.   
 ATM it is a simple blue print.
 
 
