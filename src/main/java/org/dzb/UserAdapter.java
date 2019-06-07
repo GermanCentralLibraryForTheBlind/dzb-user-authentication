@@ -41,6 +41,7 @@ public class UserAdapter extends AbstractUserAdapterFederatedStorage {
     public UserAdapter(KeycloakSession session, RealmModel realm, ComponentModel model, DzbUser user) {
         super(session, realm, model);
 
+//        logger.info("session: " + realm.getDisplayName());
         this.user = user;
         keycloakId = StorageId.keycloakId(model, String.valueOf(user.getId()));
     }
@@ -71,6 +72,9 @@ public class UserAdapter extends AbstractUserAdapterFederatedStorage {
 
     @Override
     public String getFirstAttribute(String name) {
+
+        logger.info("getFirstAttribute: " + name);
+
         if (name.equals(AbstractUserAdapterFederatedStorage.LAST_NAME_ATTRIBUTE)) {
             return user.getLastName();
         } else if (name.equals(AbstractUserAdapterFederatedStorage.FIRST_NAME_ATTRIBUTE)) {
@@ -82,12 +86,18 @@ public class UserAdapter extends AbstractUserAdapterFederatedStorage {
 
     @Override
     public Map<String, List<String>> getAttributes() {
+
         logger.info("getAttributes");
+
         Map<String, List<String>> attrs = super.getAttributes();
         MultivaluedHashMap<String, String> all = new MultivaluedHashMap<>();
         all.putAll(attrs);
-        all.add(AbstractUserAdapterFederatedStorage.LAST_NAME_ATTRIBUTE, user.getLastName());
-        all.add(AbstractUserAdapterFederatedStorage.FIRST_NAME_ATTRIBUTE, user.getFirstName());
+        all.add(DzbUser.GENDER_ATTRIBUTE, user.getGender());
+        all.add(DzbUser.HANDICAP_ATTRIBUTE, user.getHandicap());
+        all.add(DzbUser.BLIND_ATTRIBUTE, String.valueOf(user.getBlind()));
+        all.add(DzbUser.PARTIALLYSIGHTED_ATTRIBUTE, String.valueOf(user.getPartiallysighted()));
+        all.add(DzbUser.DYSLEXIA_ATTRIBUTE, String.valueOf(user.getDyslexia()));
+
         logger.info("Returned " + all.size() + " attributes");
         return all;
     }
@@ -98,12 +108,13 @@ public class UserAdapter extends AbstractUserAdapterFederatedStorage {
         logger.info("getAttribute: " + name);
         List<String> attr = new LinkedList<>();
 
-        if (name.equals(AbstractUserAdapterFederatedStorage.LAST_NAME_ATTRIBUTE)) {
-            attr.add(user.getLastName());
-        } else if (name.equals(AbstractUserAdapterFederatedStorage.FIRST_NAME_ATTRIBUTE)) {
-            attr.add(user.getFirstName());
+        if (name.equals(DzbUser.HANDICAP_ATTRIBUTE)) {
+            attr.add(user.getHandicap());
+        } else if (name.equals(DzbUser.GENDER_ATTRIBUTE)) {
+            attr.add(user.getGender());
+        } else if (name.equals(DzbUser.BIRTHDATE_ATTRIBUTE)) {
+            attr.add(user.getBirthdate());
         } else {
-
             List<String> superAttr = super.getAttribute(name);
             attr.addAll((superAttr == null) ? new ArrayList<>() : superAttr);
         }

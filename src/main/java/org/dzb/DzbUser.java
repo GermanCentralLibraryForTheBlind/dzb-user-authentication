@@ -17,6 +17,7 @@
 package org.dzb;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 
 
 /**
@@ -25,51 +26,78 @@ import javax.persistence.*;
  */
 @NamedQueries({
         @NamedQuery(
-                name="getUserByUsername",
-                query="select u from DzbUser u where u.username = :username"
+                name = "getUserByUsername",
+                query = "select u from DzbUser u where u.username = :username"
         ),
         @NamedQuery(
-                name="getUserByEmail",
-                query="select u from DzbUser u where u.username = :username"
+                name = "getUserByEmail",
+                query = "select u from DzbUser u where u.username = :username"
         ),
         @NamedQuery(
-                name="getUserCount",
-                query="select count(u) from DzbUser u"
+                name = "getUserCount",
+                query = "select count(u) from DzbUser u"
         ),
         @NamedQuery(
-                name="getAllUsers",
-                query="select u from DzbUser u"
+                name = "getAllUsers",
+                query = "select u from DzbUser u"
         ),
         @NamedQuery(
-                name="searchForUser",
-                query="select u from DzbUser u where " +
+                name = "searchForUser",
+                query = "select u from DzbUser u where " +
                         "( lower(u.username) like :search or u.lastName like :search )" +
                         " order by u.username"
         ),
 })
 @Entity
-@Table(name="tblPerson")
+@Table(name = "tblPerson")
 public class DzbUser {
 
+
+    public static String GENDER_ATTRIBUTE = "gender";
+    public static String BLIND_ATTRIBUTE = "blind";
+    public static String PARTIALLYSIGHTED_ATTRIBUTE = "partiallysighted";
+    public static String DYSLEXIA_ATTRIBUTE = "dyslexia";
+    public static String HANDICAP_ATTRIBUTE = "handicap";
+    public static String BIRTHDATE_ATTRIBUTE = "birthdate";
+
     @Id
-    @Column(name="Pers_Nr")
+    @Column(name = "Pers_Nr")
     private int id;
 
-    @Column(name="Pers_Ident_EMail")
+    @Column(name = "Pers_Ident_EMail")
     private String username;
 
-//    @Column(name="Pers_Ident_EMail")
-//    private String email;
-
-    @Column(name="Pers_Ident_PW")
+    @Column(name = "Pers_Ident_PW")
     private String password;
 
-    @Column(name="Pers_Nachname")
+    @Column(name = "Pers_Nachname")
     private String lastName;
 
-    @Column(name="Pers_Vorname")
+    @Column(name = "Pers_Vorname")
     private String firstName;
 
+    //“wrong column type encountered” schema-validation errors with JPA and Hibernate -> columnDefinition = "nchar"
+    @Column(name = "Pers_Geschlecht", columnDefinition = "nchar")
+    private String gender;
+
+    @Column(name = "Pers_Blind")
+    private boolean blind;
+
+    @Column(name = "Pers_Sehbehindert")
+    private boolean partiallysighted;
+
+    @Column(name = "Pers_Legastheniker")
+    private boolean dyslexia;
+
+
+    @Column(name = "Pers_GebDat" , columnDefinition = "smalldatetime")
+    private  String birthdate;
+
+    public DzbUser() {
+    }
+
+    //    @Column(name="Pers_Ident_EMail")
+//    private String email;
 
     public int getId() {
         return id;
@@ -79,7 +107,9 @@ public class DzbUser {
         return username;
     }
 
-    public String getEmail() { return username; }
+    public String getEmail() {
+        return username;
+    }
 
     public String getPassword() {
         return password;
@@ -93,4 +123,37 @@ public class DzbUser {
         return firstName;
     }
 
+    public String getGender() {
+        return gender;
+    }
+
+    public String getHandicap() {
+
+        ArrayList<String> handicaps = new ArrayList<>();
+        if (blind)
+            handicaps.add(BLIND_ATTRIBUTE);
+        else if (partiallysighted)
+            handicaps.add(PARTIALLYSIGHTED_ATTRIBUTE);
+        else if (dyslexia)
+            handicaps.add(DYSLEXIA_ATTRIBUTE);
+
+
+        return String.join(",", handicaps);
+    }
+
+    public boolean getBlind() {
+        return blind;
+    }
+
+    public boolean getPartiallysighted() {
+        return partiallysighted;
+    }
+
+    public boolean getDyslexia() {
+        return dyslexia;
+    }
+
+    public String getBirthdate() {
+        return birthdate;
+    }
 }
