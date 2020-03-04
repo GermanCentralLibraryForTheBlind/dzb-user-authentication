@@ -41,7 +41,7 @@
         <version.wildfly.arquillian.container>2.0.2.Final</version.wildfly.arquillian.container>
         <version.remote.wildfly.arquillian.container>8.2.1.Final</version.remote.wildfly.arquillian.container>
         <version.junit>4.12</version.junit>
-        <version.jackson>2.9.5</version.jackson>
+        <version.jackson>2.9.10.3</version.jackson>
 
         <arquillian-managed>true</arquillian-managed>
         <jboss-cli.executable>./jboss-cli.sh</jboss-cli.executable>
